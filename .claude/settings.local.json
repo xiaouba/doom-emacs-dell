@@ -5,7 +5,8 @@
       "Bash(emacs:*)",
       "Read(//c/**)",
       "Bash(doom doctor:*)",
-      "Bash(powershell -Command:*)"
+      "Bash(powershell -Command:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []
