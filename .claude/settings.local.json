@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/Dropbox/git/**)",
+      "Bash(emacs:*)",
+      "Read(//c/**)",
+      "Bash(doom doctor:*)",
+      "Bash(powershell -Command:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

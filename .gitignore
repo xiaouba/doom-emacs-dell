@@ -1,0 +1,22 @@
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Org-mode
+*_archive
+org-timestamps.dat
+
+# System files
+.DS_Store
+Thumbs.db
+nul
+
+# Temporary files
+*.tmp
+*.temp
