@@ -238,6 +238,7 @@
     ;;(setq org-agenda-file-task (expand-file-name "task.org" org-agenda-dir))
     (setq org-agenda-file-journal (expand-file-name "journal.org" org-agenda-dir))
     (setq org-agenda-file-trading (expand-file-name "trading.org" org-agenda-dir))
+    (setq org-agenda-file-projects (expand-file-name "projects.org" org-agenda-dir))
     ;; (setq org-default-notes-file (expand-file-name "gtd.org" org-agenda-dir))
     (setq org-agenda-file-finished (expand-file-name "finished.org" org-agenda-dir))
     (setq org-agenda-file-canceled (expand-file-name "canceled.org" org-agenda-dir))
@@ -253,44 +254,57 @@
   
     (setq org-capture-templates
         '(
-		  ("t" "Todo" entry (file+headline org-agenda-file-gtd "To Do Items")
+          ;; Todo 任务模板组
+		  ("t" "📋 Todo 待办事项")
+          ("tt" "📌 General Task 一般任务" entry (file+headline org-agenda-file-gtd "To Do Items")
            "* TODO [#B] %?\n %i\n %U"
            :empty-lines 1)
-		  ("h" "Habit" entry (file+headline org-agenda-file-gtd "Habit")
-           "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"<%Y-%m-%d %a .+1d/3d>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
-		  ("b" "Book Reading Task" entry (file+olp org-agenda-file-gtd "Reading" "Book")
-           "* TODO %^{书名}\n%u\n%?\n"
-		   :empty-lines 1)
-          ("w" "Work Task" entry (file+headline org-agenda-file-gtd "Task")
+          ("tw" "💼 Work Task 工作任务" entry (file+headline org-agenda-file-gtd "Task")
            "* TODO %^{任务名}\n%u\n%a\n"
 		   :empty-lines 1)
-		  ("n" "notes" entry (file+headline org-agenda-file-note "Quick notes")
+
+          ;; 会议模板
+          ("m" "🤝 Meeting 会议" entry (file+headline org-agenda-file-gtd "Meetings")
+           "* MEETING %^{会议主题} @ %^{会议地点}\nSCHEDULED: %^t\n:PROPERTIES:\n:LOCATION: %\\2\n:ATTENDEES: %^{参会人员}\n:END:\n\n** 议程 Agenda\n- %?\n\n** 会议纪要 Notes\n\n** 行动项 Action Items\n- [ ] \n\n%U"
+           :empty-lines 1)
+
+          ;; Inbox 收集箱模板
+          ("x" "📥 Inbox 收集箱" entry (file+headline org-agenda-file-gtd "Inbox")
+           "* %^{标题} :INBOX:\n%U\n%?"
+           :empty-lines 1)
+
+		  ("h" "🔁 Habit 习惯" entry (file+headline org-agenda-file-gtd "Habit")
+           "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"<%Y-%m-%d %a .+1d/3d>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
+		  ("b" "📚 Book Reading 读书" entry (file+olp org-agenda-file-gtd "Reading" "Book")
+           "* TODO %^{书名}\n%u\n%?\n"
+		   :empty-lines 1)
+		  ("n" "📝 Notes 笔记" entry (file+headline org-agenda-file-note "Quick notes")
            "* %^{heading} %^g %?\n %i\n %U"
            :empty-lines 1)
-		  ("i" "ideas" entry (file+headline org-agenda-file-note "Quick ideas")
+		  ("i" "💡 Ideas 想法" entry (file+headline org-agenda-file-note "Quick ideas")
            "* %? :IDEA:\n%U\n%a\n"
            :empty-lines 1)
-          ("j" "Journal Entry"
+          ("j" "📔 Journal 日志"
            entry (file+datetree org-agenda-file-journal)
            "* %^{heading}\n  %?\n%U"
 		   :empty-lines 1)
-		  ("o" "Trading ideas" entry (file+headline org-agenda-file-trading "Trading ideas")
+		  ("o" "💹 Trading Ideas 交易想法" entry (file+headline org-agenda-file-trading "Trading ideas")
            "* TODO [#B] %? :IDEA:\n%U\n%a\n"
            :empty-lines 1)
 
           ;; 回顾模板
-          ("r" "Reviews 回顾")
-          ("rd" "Daily Review 每日回顾" entry (file+datetree org-agenda-file-journal)
+          ("r" "🔍 Reviews 回顾")
+          ("rd" "📅 Daily Review 每日回顾" entry (file+datetree org-agenda-file-journal)
            "* 每日回顾 Daily Review :REVIEW:DAILY:\n%U\n\n** 今日完成 What I accomplished today\n- %?\n\n** 今日学到 What I learned today\n- \n\n** 明日计划 What's planned for tomorrow\n- \n\n** 今日感悟 Thoughts and reflections\n- \n\n** 改进点 Areas for improvement\n- "
            :empty-lines 1
            :jump-to-captured t)
 
-          ("rw" "Weekly Review 每周回顾" entry (file+datetree org-agenda-file-journal)
+          ("rw" "📊 Weekly Review 每周回顾" entry (file+datetree org-agenda-file-journal)
            "* 每周回顾 Weekly Review - Week %(format-time-string \"%%W\") :REVIEW:WEEKLY:\n%U\n\n** 本周成就 Achievements this week\n- %?\n\n** 本周挑战 Challenges faced\n- \n\n** 下周目标 Goals for next week\n*** TODO \n*** TODO \n*** TODO \n\n** 本周学习 Key learnings\n- \n\n** 习惯追踪 Habit tracking\n- [ ] 每日运动 Daily exercise\n- [ ] 阅读 Reading\n- [ ] 冥想 Meditation\n\n** 本周反思 Weekly reflection\n"
            :empty-lines 1
            :jump-to-captured t)
 
-          ("rm" "Monthly Review 月度回顾" entry (file+datetree org-agenda-file-journal)
+          ("rm" "📈 Monthly Review 月度回顾" entry (file+datetree org-agenda-file-journal)
            "* 月度回顾 Monthly Review - %(format-time-string \"%%Y-%%m\") :REVIEW:MONTHLY:\n%U\n\n** 月度目标完成情况 Monthly goals completion\n*** 已完成 Completed\n- %?\n*** 未完成 Not completed\n- \n\n** 重要成就 Key achievements\n- \n\n** 主要挑战和解决方案 Challenges and solutions\n- \n\n** 下月目标 Goals for next month\n*** TODO \n*** TODO \n*** TODO \n\n** 月度财务回顾 Financial review\n- 收入 Income: \n- 支出 Expenses: \n- 储蓄 Savings: \n\n** 个人成长 Personal growth\n- \n\n** 下月改进计划 Improvement plan for next month\n- "
            :empty-lines 1
            :jump-to-captured t)
@@ -320,17 +334,103 @@
     (global-set-key (kbd "C-c r w") 'my/weekly-review)
     (global-set-key (kbd "C-c r m") 'my/monthly-review)
 
+    ;; --------------- Inbox 整理辅助函数 --------------
+    ;; 快速将 Inbox 条目标记为需要 refile
+    (defun my/mark-as-refile ()
+      "Mark current entry with REFILE tag."
+      (interactive)
+      (org-toggle-tag "REFILE" 'on)
+      (org-toggle-tag "INBOX" 'off)
+      (message "Marked for refile"))
+
+    ;; 快速将条目移到 Someday/Maybe
+    (defun my/mark-as-someday ()
+      "Mark current entry as SOMEDAY."
+      (interactive)
+      (org-toggle-tag "SOMEDAY" 'on)
+      (org-toggle-tag "INBOX" 'off)
+      (org-todo "")
+      (message "Moved to Someday/Maybe"))
+
+    ;; 快速处理 Inbox 条目（设置 TODO 和优先级）
+    (defun my/process-inbox-item ()
+      "Quick process inbox item: set TODO state and priority."
+      (interactive)
+      (org-todo "TODO")
+      (org-priority ?B)
+      (org-toggle-tag "INBOX" 'off)
+      (message "Inbox item processed. Ready to refile with C-c C-w"))
+
+    ;; 统计 Inbox 数量
+    (defun my/count-inbox-items ()
+      "Count and display number of inbox items."
+      (interactive)
+      (let ((count 0))
+        (org-map-entries
+         (lambda () (setq count (1+ count)))
+         "INBOX"
+         'agenda)
+        (message "📥 Inbox contains %d items" count)))
+
+    ;; 一键清理已完成的 Inbox 条目
+    (defun my/archive-done-inbox-items ()
+      "Archive all DONE items in Inbox."
+      (interactive)
+      (let ((count 0))
+        (org-map-entries
+         (lambda ()
+           (when (member (org-get-todo-state) '("DONE" "CANCELLED"))
+             (org-archive-subtree)
+             (setq count (1+ count))))
+         "INBOX"
+         'file)
+        (message "Archived %d completed inbox items" count)))
+
+    ;; 绑定 Inbox 整理快捷键
+    (global-set-key (kbd "C-c i r") 'my/mark-as-refile)
+    (global-set-key (kbd "C-c i s") 'my/mark-as-someday)
+    (global-set-key (kbd "C-c i p") 'my/process-inbox-item)
+    (global-set-key (kbd "C-c i c") 'my/count-inbox-items)
+    (global-set-key (kbd "C-c i a") 'my/archive-done-inbox-items)
+
+    ;; 辅助函数：检查条目是否在 Inbox 标题下
+    (defun my/org-agenda-skip-if-not-inbox-child ()
+      "Skip entries that are not direct children of Inbox heading."
+      (let ((parent-heading (save-excursion
+                              (org-up-heading-safe)
+                              (org-get-heading t t t t))))
+        (if (string= parent-heading "Inbox")
+            nil
+          (org-entry-end-position))))
+
     ;; --------------- 定义转接文件 --------------
     (define-key global-map "\C-cr" 'org-refile)
 
+    ;; 扩展 refile targets - 支持 Inbox 快速整理到各个位置
+    (setq org-refile-targets  '((org-agenda-file-gtd :maxlevel . 2)        ; GTD 主文件的二级标题
+                               (org-agenda-file-projects :maxlevel . 2)    ; 项目文件
+                               (org-agenda-file-note :maxlevel . 2)        ; 笔记文件
+                               (org-agenda-file-trading :maxlevel . 2)     ; 交易文件
+                               (org-agenda-file-finished :maxlevel . 1)    ; 已完成归档
+                               (org-agenda-file-canceled :maxlevel . 1)))  ; 已取消归档
 
-    ;; 添加finished和canceled两个文件路径，并且只转移到一级标题
-    (setq org-refile-targets  '((org-agenda-file-finished :maxlevel . 1)
-                               (org-agenda-file-canceled :maxlevel . 1)
-                               ))	
+    ;; Refile 使用完整路径显示
+    (setq org-refile-use-outline-path 'file)
+    (setq org-outline-path-complete-in-steps nil)
+    (setq org-refile-allow-creating-parent-nodes 'confirm)	
 	
-    ;;; roam v2 configuration	
+    ;;; roam v2 configuration
 	(setq org-roam-directory "D:/Dropbox/git/org/roam") ;改成你的文件位置
+
+    ;; ------------------  美化 MEETING 在 agenda 中的显示 ------------------
+    ;; 定义MEETING关键字
+    (setq org-todo-keywords
+          '((sequence "TODO(t)" "NEXT(n)" "STARTED(s)" "WAITING(w)" "HOLD(h)" "|" "DONE(d)" "CANCELLED(c)")
+            (sequence "MEETING(m)" "|" "DONE(d)")))
+
+    ;; 设置MEETING的显示颜色和样式 - 只突出MEETING关键字本身
+    (setq org-todo-keyword-faces
+          '(("MEETING" . (:foreground "#ff6c6b" :weight bold))))
 
     ;; ------------------  设置aganda view
     ;; An Agenda for Life With Org Mode
@@ -489,20 +589,98 @@
                  (org-agenda-skip-function 'air-org-skip-subtree-if-habit)
                  (org-agenda-max-entries 10))))
          ((org-agenda-compact-blocks nil)
-          (org-agenda-block-separator "────────────────────────────────────────")))))
+          (org-agenda-block-separator "────────────────────────────────────────")))
 
-	;;; org-download
-    (require 'org-download)
+        ;; 项目视图
+        ("p" "项目视图 Project Board"
+         ((todo "PROJ"
+                ((org-agenda-files (list org-agenda-file-projects))
+                 (org-agenda-overriding-header "🗂 活动项目 Active Projects:")
+                 (org-tags-match-list-sublevels 'indented)
+                 (org-agenda-sorting-strategy '(priority-down todo-state-down category-keep))))
+          (todo "NEXT|TODO"
+                ((org-agenda-files (list org-agenda-file-projects))
+                 (org-agenda-overriding-header "➡️ 下一步行动 Next Actions:")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("PROJ" "WAIT" "HOLD")))
+                 (org-tags-match-list-sublevels 'indented)
+                 (org-agenda-prefix-format '((todo . " %i %-12:c")))
+                 (org-agenda-sorting-strategy '(priority-down scheduled-up category-keep))))
+          (todo "WAIT|HOLD"
+                ((org-agenda-files (list org-agenda-file-projects))
+                 (org-agenda-overriding-header "⏸ 阻塞项目 Waiting / On Hold:")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("PROJ")))
+                 (org-tags-match-list-sublevels 'indented)
+                 (org-agenda-sorting-strategy '(priority-down todo-state-down)))))
+         ((org-agenda-compact-blocks nil)
+          (org-agenda-block-separator "────────────────────────────────────────")
+          (org-agenda-start-with-log-mode nil)))
 
-    ;; Drag-and-drop to `dired`
-    (add-hook 'dired-mode-hook 'org-download-enable)
-	
-	;; Option 2: Globally
-    (with-eval-after-load 'org (global-org-modern-mode))
+        ;; 交易视图
+        ("y" "交易视图 Trading Desk"
+         ((agenda ""
+                  ((org-agenda-files (list org-agenda-file-trading))
+                   (org-agenda-span 7)
+                   (org-agenda-start-day "0d")
+                   (org-agenda-overriding-header "📅 交易日程 Trading Calendar:")
+                   (org-habit-show-habits nil)
+                   (org-agenda-show-log nil)))
+          (todo "NEXT|STRT|TODO"
+                ((org-agenda-files (list org-agenda-file-trading))
+                 (org-agenda-overriding-header "▶️ 活动策略 Active Setups:")
+                 (org-tags-match-list-sublevels 'indented)
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("WAIT" "HOLD" "DONE" "KILL" "NO")))
+                 (org-agenda-sorting-strategy '(priority-down deadline-up))))
+          (tags-todo "IDEA"
+                     ((org-agenda-files (list org-agenda-file-trading))
+                      (org-agenda-overriding-header "💡 交易想法 Idea Pipeline:")
+                      (org-tags-match-list-sublevels 'indented)
+                      (org-agenda-sorting-strategy '(priority-down alpha))))
+          (todo "WAIT|HOLD"
+                ((org-agenda-files (list org-agenda-file-trading))
+                 (org-agenda-overriding-header "⏳ 等待信号 Waiting Signals:")
+                 (org-agenda-sorting-strategy '(todo-state-down priority-down)))))
+         ((org-agenda-compact-blocks nil)
+          (org-agenda-block-separator "────────────────────────────────────────")
+          (org-agenda-start-with-log-mode nil)))
 
+        ;; Inbox 整理视图 - 优化版本
+        ("i" "📥 Inbox 收集箱整理 Inbox Processing"
+         ((tags "LEVEL=2"
+                ((org-agenda-overriding-header "📥 Inbox 标题下的所有条目 All Items under Inbox Heading:")
+                 (org-agenda-files (list org-agenda-file-gtd))
+                 (org-agenda-skip-function 'my/org-agenda-skip-if-not-inbox-child)
+                 (org-agenda-sorting-strategy '(time-up))))
+          (tags "INBOX+TODO=\"\""
+                ((org-agenda-overriding-header "📥 带 INBOX 标签但未分类的条目 Unprocessed Items with INBOX tag:")
+                 (org-tags-match-list-sublevels nil)
+                 (org-agenda-sorting-strategy '(time-up))))
+          (tags "INBOX+TODO=\"TODO\"|INBOX+TODO=\"NEXT\""
+                ((org-agenda-overriding-header "✅ 已标记但未 Refile 的条目 Marked but Not Refiled:")
+                 (org-tags-match-list-sublevels nil)
+                 (org-agenda-sorting-strategy '(priority-down time-up))))
+          (tags "REFILE"
+                ((org-agenda-overriding-header "🏷️ 标记为 REFILE 的条目 Marked for Refile:")
+                 (org-tags-match-list-sublevels nil)))
+          (tags "SOMEDAY"
+                ((org-agenda-overriding-header "💭 可能/将来 Someday/Maybe:")
+                 (org-tags-match-list-sublevels nil))))
+         ((org-agenda-compact-blocks nil)
+          (org-agenda-block-separator "────────────────────────────────────────")
+          (org-agenda-prefix-format '((tags . " %i %-12:c %s")))))
 
-	;; 切换窗口
-	(global-set-key [C-tab] 'other-window)
+        ))
+
+;;; org-download
+(after! org
+  (require 'org-download)
+  ;; Drag-and-drop to `dired`
+  (add-hook 'dired-mode-hook 'org-download-enable))
+
+;; Option 2: Globally
+(with-eval-after-load 'org (global-org-modern-mode))
+
+;; 切换窗口
+(global-set-key [C-tab] 'other-window)
 
     ;; org-agenda-files 已在前面设置
 	;;(org-agenda-list t)
